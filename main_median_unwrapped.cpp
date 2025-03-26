@@ -27,61 +27,38 @@
  
  #include "highgui.h"
  #include "cv.h"
- // #include <omp.h>
+ 
  #define MAX_FRAMES 30
  
  
- // static int GX[3][3];// = new int[3][3];
- // static int GY[3][3];// = new int[3][3];
+ static int GX[3][3];// = new int[3][3];
+ static int GY[3][3];// = new int[3][3];
  
- static int GX_1D_x[3];
- static int GX_1D_y[3];
- static int GY_1D_x[3];
- static int GY_1D_y[3];
- 
- // void setup_filter_sobel_X() {
- //     GX[0][0] = -1;
- //     GX[0][1] = 0;
- //     GX[0][2] = 1;
- //     GX[1][0] = -2;
- //     GX[1][1] = 0;
- //     GX[1][2] = 2;
- //     GX[2][0] = -1;
- //     GX[2][1] = 0;
- //     GX[2][2] = 1;
- // }
- // void setup_filter_sobel_Y() {
- //     GY[0][0] =  1;
- //     GY[0][1] =  2;
- //     GY[0][2] =  1;
- //     GY[1][0] =  0;
- //     GY[1][1] =  0;
- //     GY[1][2] =  0;
- //     GY[2][0] = -1;
- //     GY[2][1] = -2;
- //     GY[2][2] = -1;
- // }
- void setup_filter_sobel_X2() {
-     GX_1D_x[0] = -1;
-     GX_1D_x[1] = 0;
-     GX_1D_x[2] = 1;
-     GX_1D_y[0] = 1;
-     GX_1D_y[1] = 2;
-     GX_1D_y[2] = 1;
+ void setup_filter_sobel_X() {
+     GX[0][0] = -1;
+     GX[0][1] = 0;
+     GX[0][2] = 1;
+     GX[1][0] = -2;
+     GX[1][1] = 0;
+     GX[1][2] = 2;
+     GX[2][0] = -1;
+     GX[2][1] = 0;
+     GX[2][2] = 1;
  }
- void setup_filter_sobel_Y2() {
-     GY_1D_x[0] =  1;
-     GY_1D_x[1] =  2;
-     GY_1D_x[2] =  1;
-     GY_1D_y[0] =  1;
-     GY_1D_y[1] =  0;
-     GY_1D_y[2] = -1;
+ void setup_filter_sobel_Y() {
+     GY[0][0] =  1;
+     GY[0][1] =  2;
+     GY[0][2] =  1;
+     GY[1][0] =  0;
+     GY[1][1] =  0;
+     GY[1][2] =  0;
+     GY[2][0] = -1;
+     GY[2][1] = -2;
+     GY[2][2] = -1;
  }
  void setup_filter_sobel() {
-     // setup_filter_sobel_X();
-     // setup_filter_sobel_Y();
-     setup_filter_sobel_X2();
-     setup_filter_sobel_Y2();
+     setup_filter_sobel_X();
+     setup_filter_sobel_Y();
  }
  
  char getValueAt(uchar *data, int width, int height, int x, int y) {
@@ -99,122 +76,40 @@
      return 0;
  }
  
- // int sobel(uchar *data, uchar *out, int width, int height) {
+ int sobel(uchar *data, uchar *out, int width, int height) {
  
- //     int sumX=0;
- //     int sumY=0;
- //     int sum=0;
- 
- //     for(int y = 0+1; y < height-1; y++) {
- //         for(int x = 0+1; x < width-1; x++) {
- //             for(int i = -1; i <= 1; i++) {
- //                 for(int j = -1; j <= 1; j++){
- //                     float v = getValueAt(data, width, height, x + i, y + j);
- //                     sumX += v * GX[ i + 1][ j + 1]; // applique le masque sur le canal rouge
- //                 }
- //             }
- //             for(int i = -1; i <= 1; i++) {
- //                 for(int j = -1; j <= 1; j++) {
- //                     float v = getValueAt(data, width, height, x + i, y + j);
- //                       sumY += v * GY[ i + 1][ j + 1]; // applique le masque sur le canal rouge
- //                 }
- //             }
- //             sum = abs(sumX) + abs(sumY);
- //             setValueAt(out, width, height, x, y, sum);
- //             //imgSobel.pixels[ x + (y * imgSobel.width) ] = color(finalSumR, finalSumG, finalSumB);
- //             sumX=0;
- //             sumY=0;
- //         }
- //     }
- 
- //     //img1.updatePixels();  // met à jour les pixels  
- //     //return imgSobel;
- //     return 0;
- // }
- 
- int sobelX_1(uchar *data, uchar *out, int width, int height) {
      int sumX=0;
- 
-     for(int x = 0+1; x < width-1; x++) {
-         for(int y = 0+1; y < height-1; y++) {
-             for(int i = -1; i <= 1; i++) {
-                 float v = getValueAt(data, width, height, x + i, y);
-                 sumX += v * GX_1D_x[ i + 1];
-             }
-             setValueAt(out, width, height, x, y, abs(sumX));
-             sumX=0;
-         }
-     }
- 
-     return 0;
- }
- 
- int sobelX_2(uchar *data, uchar *out, int width, int height) {
-     int sumX=0;
- 
-     for(int x = 0+1; x < width-1; x++) {
-         for(int y = 0+1; y < height-1; y++) {
-             for(int i = -1; i <= 1; i++) {
-                 float v = getValueAt(data, width, height, x, y + i);
-                 sumX += v * GX_1D_y[ i + 1];
-             }
-             setValueAt(out, width, height, x, y, abs(sumX));
-             sumX=0;
-         }
-     }
- 
-     return 0;
- }
- 
- int sobelY_1(uchar *data, uchar *out, int width, int height) {
      int sumY=0;
- 
-     for(int x = 0+1; x < width-1; x++) {
-         for(int y = 0+1; y < height-1; y++) {
-             for(int i = -1; i <= 1; i++) {
-                 float v = getValueAt(data, width, height, x + i, y);
-                 sumY += v * GY_1D_x[ i + 1];
-             }
-             setValueAt(out, width, height, x, y, abs(sumY));
-             sumY=0;
-         }
-     }
- 
-     return 0;
- }
- 
- int sobelY_2(uchar *data, uchar *out, int width, int height) {
-     int sumY=0;
- 
-     for(int x = 0+1; x < width-1; x++) {
-         for(int y = 0+1; y < height-1; y++) {
-             for(int i = -1; i <= 1; i++) {
-                 float v = getValueAt(data, width, height, x, y + i);
-                 sumY += v * GY_1D_y[ i + 1];
-             }
-             setValueAt(out, width, height, x, y, abs(sumY));
-             sumY=0;
-         }
-     }
- 
-     return 0;
- }
- 
- int sobel_sum(uchar* datax, uchar* datay, uchar* out, int width, int height) {
      int sum=0;
  
-     for(int x = 0+1; x < width-1; x++) {
-         for(int y = 0+1; y < height-1; y++) {
-             float vx = getValueAt(datax, width, height, x, y);
-             float vy = getValueAt(datay, width, height, x, y);
-             sum = vx + vy;
-             setValueAt(out, width, height, x, y, sum);
-             sum=0;
-         }
-     }
+     for(int y = 0+1; y < height-1; y++) {
+         for(int x = 0+1; x < width-1; x++) {
+             for(int i = -1; i <= 1; i++) {
+                 for(int j = -1; j <= 1; j++){
+                     float v = getValueAt(data, width, height, x + i, y + j);
+                     sumX += v * GX[ i + 1][ j + 1]; // applique le masque sur le canal rouge
+                 }
+               }
  
+               for(int i = -1; i <= 1; i++) {
+                 for(int j = -1; j <= 1; j++) {
+                     float v = getValueAt(data, width, height, x + i, y + j);
+                       sumY += v * GY[ i + 1][ j + 1]; // applique le masque sur le canal rouge
+                 }
+               }
+ 
+         sum = abs(sumX) + abs(sumY);
+         setValueAt(out, width, height, x, y, sum);
+         //imgSobel.pixels[ x + (y * imgSobel.width) ] = color(finalSumR, finalSumG, finalSumB);
+         sumX=0;
+         sumY=0;
+     }
+     }
+           //img1.updatePixels();  // met à jour les pixels  
+           //return imgSobel;
      return 0;
  }
+ 
  
  
  char median_step(uchar *data, int width, int height, int i, int j) {
@@ -244,7 +139,7 @@
      //         index++;
      //     }
      // }
-     for(int i=0; i<9; i++) {
+     for(int i=0; i<5; i++) {
          for(int j=i+1; i<9; i++) {
              if(data[i]>data[j]) {
                  temp = data[i];
@@ -268,7 +163,15 @@
  int compute_rgb_to_grayscale(uchar *data_in, uchar *data_out, int step_in, int step_out, int width, int height, int channels) {
      for(int i=0;i<height;i++)
          for(int j=0;j<width;j++)
-         { data_out[i*step_out+j]=0.114*data_in[i*step_in+j*channels+0]+ 0.587*data_in[i*step_in+j*channels+1] + 0.299*data_in[i*step_in+j*channels+2];}
+         { data_out[i*step_out+j]=0.114f*data_in[i*step_in+j*channels+0]+ 0.587f*data_in[i*step_in+j*channels+1] + 0.299f*data_in[i*step_in+j*channels+2];}
+     return 0;
+ }
+ 
+ int paste(uchar *data_in, uchar *data_out, int width, int height) {
+     int total = width*height;
+     for(int i=0; i<total; i++) {
+         data_out[i] = data_in[i];
+     }
      return 0;
  }
  
@@ -284,9 +187,6 @@
       IplImage *Image_IN;
       IplImage *Image_OUT;
       IplImage *Image_MEDIAN;
-      IplImage *Image_SOBELI;
-      IplImage *Image_SOBELX;
-      IplImage *Image_SOBELY;
       IplImage *Image_SOBEL;
       
      // Capture vidéo
@@ -297,9 +197,6 @@
      uchar *Data_in;            // pointeur des données Image_IN
      uchar *Data_out;        // pointeur des données Image_OUT
      uchar *Data_median;        // pointeur des données Image_MEDIAN
-     uchar *Data_sobelI;        // pointeur des données Image_SOBELI
-     uchar *Data_sobelX;        // pointeur des données Image_SOBELX
-     uchar *Data_sobelY;        // pointeur des données Image_SOBELY
      uchar *Data_sobel;        // pointeur des données Image_SOBEL
   
      // Ouvrir le flux vidéo
@@ -337,9 +234,6 @@
      // Création de l'image de sortie
      Image_OUT    = cvCreateImage(cvSize(Image_IN->width,Image_IN->height),  IPL_DEPTH_8U, 1);
      Image_MEDIAN    = cvCreateImage(cvSize(Image_IN->width,Image_IN->height),  IPL_DEPTH_8U, 1);    
-     Image_SOBELI    = cvCreateImage(cvSize(Image_IN->width,Image_IN->height),  IPL_DEPTH_8U, 1);
-     Image_SOBELX    = cvCreateImage(cvSize(Image_IN->width,Image_IN->height),  IPL_DEPTH_8U, 1);
-     Image_SOBELY    = cvCreateImage(cvSize(Image_IN->width,Image_IN->height),  IPL_DEPTH_8U, 1);
      Image_SOBEL    = cvCreateImage(cvSize(Image_IN->width,Image_IN->height),  IPL_DEPTH_8U, 1);
      int step_gray    = Image_OUT->widthStep/sizeof(uchar);
  
@@ -357,31 +251,25 @@
          channels    = Image_IN->nChannels;
          // initialisation des pointeurs de donnée
          Data_in        = (uchar *) Image_IN->imageData;
-         Data_out    = (uchar *) Image_OUT->imageData;
-         Data_median    = (uchar *) Image_MEDIAN->imageData;
-         Data_sobelI    = (uchar *) Image_SOBELI->imageData;
-         Data_sobelX    = (uchar *) Image_SOBELX->imageData;
-         Data_sobelY    = (uchar *) Image_SOBELY->imageData;
-         Data_sobel    = (uchar *) Image_SOBEL->imageData;
+        //  Data_out    = (uchar *) Image_OUT->imageData;
+        //  Data_median    = (uchar *) Image_MEDIAN->imageData;
+        //  Data_sobel    = (uchar *) Image_SOBEL->imageData;
        
          //conversion RGB en niveau de gris
          compute_rgb_to_grayscale(Data_in, Data_out, step, step_gray, width, height, channels);
  
-         // Application d'un filtre median
+        //  paste(Data_out, Data_median, width, height);
+        //  paste(Data_median, Data_sobel, width, height);
+ 
+         // // Application d'un filtre median
          median(Data_out, Data_median, width, height, step_gray);
  
-         // Application d'un filtre sobel
-         // sobel(Data_median, Data_sobel, width, height);
-         sobelX_1(Data_median, Data_sobelI, width, height);
-         sobelX_2(Data_sobelI, Data_sobelX, width, height);
-         sobelY_2(Data_median, Data_sobelI, width, height);
-         sobelY_1(Data_sobelI, Data_sobelY, width, height);
-         sobel_sum(Data_sobelX, Data_sobelY, Data_sobel, width, height);
- 
+         // // Application d'un filtre sobel
+         sobel(Data_median, Data_sobel, width, height);
  
          // On affiche l'Image_IN dans une fenêtre
          cvShowImage( "Image_IN_Window", Image_IN);
-         // On affiche l'Image_OUT dans une deuxième fenêtre
+        //  On affiche l'Image_OUT dans une deuxième fenêtre
          cvShowImage( "Image_OUT_Window", Image_OUT);
          // On affiche l'Image_MEDIAN dans une troisième fenêtre
          cvShowImage( "Image_MEDIAN_Window", Image_MEDIAN);

@@ -109,36 +109,101 @@
            //return imgSobel;
      return 0;
  }
+//  int sobel(uchar *data, uchar *out, int width, int height) {
+ 
+//      int sumX=0;
+//      int sumY=0;
+//      int sum=0;
+ 
+//      for(int y = 0+1; y < height-1; y++) {
+//          for(int x = 0+1; x < width-1; x++) {
+
+//             int low_x  = (x-1<0?0:(x-1));
+//             int low_y  = ((y-1)<0?0:(y-1));
+//             int high_x = (x+1>0?(x+1):x);
+//             int high_y = ((y+1)>width?0:(y+1));
+
+//             float local = 0.0f;
+//             local += -1 * data[low_y*width+low_x]; 
+//             // local += 0 * data[low_y*width+x]; 
+//             local += 1 * data[low_y*width+high_x]; 
+//             local += -2 * data[y*width+low_x]; 
+//             // local += 0 * data[y*width+x]; 
+//             local += 2 * data[y*width+high_x]; 
+//             local += -1 * data[high_y*width+low_x]; 
+//             // local += 0 * data[high_y*width+x]; 
+//             local += 1 * data[high_y*width+high_x];
+            
+//             sumX += local;
+//             local = 0.0f;
+            
+//             local +=  1 * data[low_y*width+low_x]; 
+//             local +=  2 * data[low_y*width+x]; 
+//             local +=  1 * data[low_y*width+high_x]; 
+//             // local +=  0 * data[y*width+low_x]; 
+//             // local +=  0 * data[y*width+x]; 
+//             // local +=  0 * data[y*width+high_x]; 
+//             local += -1 * data[high_y*width+low_x]; 
+//             local += -2 * data[high_y*width+x]; 
+//             local += -1 * data[high_y*width+high_x];
+            
+//             sumY += local;
+            
+
+//             //  for(int i = -1; i <= 1; i++) {
+//             //      for(int j = -1; j <= 1; j++){
+//             //          float v = getValueAt(data, width, height, x + i, y + j);
+//             //          sumX += v * GX[ i + 1][ j + 1]; // applique le masque sur le canal rouge
+//             //      }
+//             //    }
+ 
+//             //    for(int i = -1; i <= 1; i++) {
+//             //      for(int j = -1; j <= 1; j++) {
+//             //          float v = getValueAt(data, width, height, x + i, y + j);
+//             //            sumY += v * GY[ i + 1][ j + 1]; // applique le masque sur le canal rouge
+//             //      }
+//             //    }
+ 
+//          sum = abs(sumX) + abs(sumY);
+//          setValueAt(out, width, height, x, y, sum);
+//          //imgSobel.pixels[ x + (y * imgSobel.width) ] = color(finalSumR, finalSumG, finalSumB);
+//          sumX=0;
+//          sumY=0;
+//      }
+//      }
+//      return 0;
+//  }
  
  
  
  char median_step(uchar *data, int width, int height, int i, int j) {
      char values[9];
      char temp;
+     int index = 0;
  
-     int low_x  = (j-1<0?0:(j-1));
-     int low_y  = ((i-1)<0?0:(i-1));
-     int high_x = (j+1>0?(j+1):j);
-     int high_y = ((i+1)>width?0:(i+1));
+    //  int low_x  = (j-1<0?0:(j-1));
+    //  int low_y  = ((i-1)<0?0:(i-1));
+    //  int high_x = (j+1>0?(j+1):j);
+    //  int high_y = ((i+1)>width?0:(i+1));
  
-     values[0] = data[low_y*width+low_x]; 
-     values[1] = data[low_y*width+j]; 
-     values[2] = data[low_y*width+high_x]; 
-     values[3] = data[i*width+low_x]; 
-     values[4] = data[i*width+j]; 
-     values[5] = data[i*width+high_x]; 
-     values[6] = data[high_y*width+low_x]; 
-     values[7] = data[high_y*width+j]; 
-     values[8] = data[high_y*width+high_x]; 
+    //  values[0] = data[low_y*width+low_x]; 
+    //  values[1] = data[low_y*width+j]; 
+    //  values[2] = data[low_y*width+high_x]; 
+    //  values[3] = data[i*width+low_x]; 
+    //  values[4] = data[i*width+j]; 
+    //  values[5] = data[i*width+high_x]; 
+    //  values[6] = data[high_y*width+low_x]; 
+    //  values[7] = data[high_y*width+j]; 
+    //  values[8] = data[high_y*width+high_x]; 
  
-     // for(int y = i-1; y <= i+1; y++) {
-     //     if(y<0 || y >=height) {continue;}
-     //     for(int x = j-1; x <= j+1; x++) {
-     //         if(y<0 || y >=width) {continue;}
-     //         values[index] = data[y*width + x];
-     //         index++;
-     //     }
-     // }
+     for(int y = i-1; y <= i+1; y++) {
+         if(y<0 || y >=height) {continue;}
+         for(int x = j-1; x <= j+1; x++) {
+             if(y<0 || y >=width) {continue;}
+             values[index] = data[y*width + x];
+             index++;
+         }
+     }
      for(int i=0; i<5; i++) {
          for(int j=i+1; i<9; i++) {
              if(data[i]>data[j]) {
@@ -163,7 +228,15 @@
  int compute_rgb_to_grayscale(uchar *data_in, uchar *data_out, int step_in, int step_out, int width, int height, int channels) {
      for(int i=0;i<height;i++)
          for(int j=0;j<width;j++)
-         { data_out[i*step_out+j]=0.114*data_in[i*step_in+j*channels+0]+ 0.587*data_in[i*step_in+j*channels+1] + 0.299*data_in[i*step_in+j*channels+2];}
+         { data_out[i*step_out+j]=0.114f*data_in[i*step_in+j*channels+0]+ 0.587f*data_in[i*step_in+j*channels+1] + 0.299f*data_in[i*step_in+j*channels+2];}
+     return 0;
+ }
+ 
+ int paste(uchar *data_in, uchar *data_out, int width, int height) {
+     int total = width*height;
+     for(int i=0; i<total; i++) {
+         data_out[i] = data_in[i];
+     }
      return 0;
  }
  
@@ -196,7 +269,7 @@
      //capture = cvCreateFileCapture("/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_*");
      //capture = cvCreateFileCapture("/dev/v4l/by-path/platform-ci_hdrc.1-usb-0\:1.1\:1.0-video-index0");
      //capture = cvCreateFileCapture("/dev/web_cam0");
-     capture = cvCreateFileCapture("/dev/video4");
+     capture = cvCreateFileCapture("/dev/video2");
      // capture = cvCreateCameraCapture( CV_CAP_ANY );
      //capture = cvCreateCameraCapture( 4 );
      
@@ -243,22 +316,25 @@
          channels    = Image_IN->nChannels;
          // initialisation des pointeurs de donnée
          Data_in        = (uchar *) Image_IN->imageData;
-         Data_out    = (uchar *) Image_OUT->imageData;
-         Data_median    = (uchar *) Image_MEDIAN->imageData;
-         Data_sobel    = (uchar *) Image_SOBEL->imageData;
+        //  Data_out    = (uchar *) Image_OUT->imageData;
+        //  Data_median    = (uchar *) Image_MEDIAN->imageData;
+        //  Data_sobel    = (uchar *) Image_SOBEL->imageData;
        
          //conversion RGB en niveau de gris
          compute_rgb_to_grayscale(Data_in, Data_out, step, step_gray, width, height, channels);
  
-         // Application d'un filtre median
+        //  paste(Data_out, Data_median, width, height);
+        //  paste(Data_median, Data_sobel, width, height);
+ 
+         // // Application d'un filtre median
          median(Data_out, Data_median, width, height, step_gray);
  
-         // Application d'un filtre sobel
+         // // Application d'un filtre sobel
          sobel(Data_median, Data_sobel, width, height);
  
          // On affiche l'Image_IN dans une fenêtre
          cvShowImage( "Image_IN_Window", Image_IN);
-         // On affiche l'Image_OUT dans une deuxième fenêtre
+        //  On affiche l'Image_OUT dans une deuxième fenêtre
          cvShowImage( "Image_OUT_Window", Image_OUT);
          // On affiche l'Image_MEDIAN dans une troisième fenêtre
          cvShowImage( "Image_MEDIAN_Window", Image_MEDIAN);
