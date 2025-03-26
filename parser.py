@@ -27,12 +27,12 @@ for base in base_folder:
                     dico = {}
                     values = l.split()
                     dico['percent']       = float(values[0])
-                    dico['cum sec'] = float(values[1])
-                    dico['self sec']       = float(values[2])
-                    dico['calls']              = int(values[3])
-                    dico['ms/call']            = float(values[4])
-                    dico['tt ms/call']      = float(values[5])
-                    dico['name']               = values[6]
+                    dico['cum sec']       = float(values[1])
+                    dico['self sec']      = float(values[2])
+                    dico['calls']         = int(values[3])
+                    dico['ms/call']       = float(values[4])
+                    dico['tt ms/call']    = float(values[5])
+                    dico['name']          = values[6]
                     call_list[filename].append(dico)
 
         all_times = 0
