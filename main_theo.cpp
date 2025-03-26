@@ -28,7 +28,7 @@
 #include "highgui.h"
 #include "cv.h"
 
-#define MAX_FRAMES 60
+#define MAX_FRAMES 30
 
 
 static int GX[3][3];// = new int[3][3];
@@ -116,20 +116,20 @@ char median_step(uchar *data, int width, int height, int i, int j) {
     char values[9];
     char temp;
 
-    int low_x  = (i-1<0?0:(i-1));
+    int low_x  = (j-1<0?0:(j-1));
     int low_y  = ((i-1)<0?0:(i-1));
-    int high_x = (i+1>0?(i+1):i);
+    int high_x = (j+1>0?(j+1):j);
     int high_y = ((i+1)>width?0:(i+1));
 
-    values[0] = data[*width+low_x]; 
-    values[1] = data[*width+(i            )]; 
-    values[2] = data[*width+high_x]; 
+    values[0] = data[low_y*width+low_x]; 
+    values[1] = data[low_y*width+j]; 
+    values[2] = data[low_y*width+high_x]; 
     values[3] = data[i*width+low_x]; 
-    values[4] = data[i*width+(i            )]; 
+    values[4] = data[i*width+j]; 
     values[5] = data[i*width+high_x]; 
-    values[6] = data[*width+low_x]; 
-    values[7] = data[*width+(i            )]; 
-    values[8] = data[*width+high_x]; 
+    values[6] = data[high_y*width+low_x]; 
+    values[7] = data[high_y*width+j]; 
+    values[8] = data[high_y*width+high_x]; 
 
     // for(int y = i-1; y <= i+1; y++) {
     //     if(y<0 || y >=height) {continue;}
@@ -139,11 +139,13 @@ char median_step(uchar *data, int width, int height, int i, int j) {
     //         index++;
     //     }
     // }
-    for(int i=0; i<9; i++) {
+    for(int i=0; i<5; i++) {
         for(int j=i+1; i<9; i++) {
-            temp = data[i];
-            data[i] = data[j];
-            data[j] = temp;
+            if(data[i]>data[j]) {
+                temp = data[i];
+                data[i] = data[j];
+                data[j] = temp;
+            }
         }
     }
     return values[4];

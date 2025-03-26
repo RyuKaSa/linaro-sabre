@@ -1,0 +1,14 @@
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 53.60     12.51    12.51       30   417.00   611.33  sobel(unsigned char*, unsigned char*, int, int)
+ 23.14     17.91     5.40 164680560     0.00     0.00  getValueAt(unsigned char*, int, int, int, int)
+ 15.47     21.52     3.61  9216000     0.00     0.00  median_step(unsigned char*, int, int, int, int)
+  4.24     22.51     0.99       30    33.00    33.00  compute_rgb_to_grayscale(unsigned char*, unsigned char*, int, int, int, int, int)
+  1.84     22.94     0.43  9148920     0.00     0.00  setValueAt(unsigned char*, int, int, int, int, char)
+  1.71     23.34     0.40       30    13.33   133.67  median(unsigned char*, unsigned char*, int, int, int)
+  0.00     23.34     0.00        3     0.00     0.00  cvSize(int, int)
+  0.00     23.34     0.00        3     0.00     0.00  CvSize::CvSize(int, int)
+  0.00     23.34     0.00        1     0.00     0.00  setup_filter_sobel()
+  0.00     23.34     0.00        1     0.00     0.00  setup_filter_sobel_X()
+  0.00     23.34     0.00        1     0.00     0.00  setup_filter_sobel_Y()
