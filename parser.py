@@ -4,7 +4,7 @@ import re
 # filename = "perfs"
 
 base_folder =  ["30fps"]
-version_folder = ["baseline", "medium"]
+version_folder = ["baseline", "medium", "sobel_2"]
 
 for base in base_folder:
 
@@ -29,10 +29,16 @@ for base in base_folder:
                     dico['percent']       = float(values[0])
                     dico['cum sec']       = float(values[1])
                     dico['self sec']      = float(values[2])
-                    dico['calls']         = int(values[3])
-                    dico['ms/call']       = float(values[4])
-                    dico['tt ms/call']    = float(values[5])
-                    dico['name']          = values[6]
+                    if(len(values)>4):
+                        dico['calls']         = int(values[3])
+                        dico['ms/call']       = float(values[4])
+                        dico['tt ms/call']    = float(values[5])
+                        dico['name']          = values[6]
+                    else:
+                        dico['name']          = values[3]
+                        dico['calls']         = 0
+                        dico['ms/call']       = 0.0
+                        dico['tt ms/call']    = 0.0
                     call_list[filename].append(dico)
 
         all_times = 0
